@@ -32,13 +32,16 @@ function getJSON(url) {
 getJSON('data/story.json').then(function(story) {
   addContentToPage(story.heading);
 
-  return Promise.all(
-    story.chapterUrls.map(getJSON)
-  );
-}).then(function(chapters) {
-  chapters.forEach(function(chapter) {
-    addContentToPage(chapter.html);
-  });
+  return story.chapterUrls.map(getJSON)
+    .reduce(function(sequence, chapterPromise) {
+      return sequence.then(function() {
+        return chapterPromise;
+      }).then(function(chapter) {
+        addContentToPage(chapter.html);
+      });
+    }, Promise.resolve());
+}).then(function() {
+  console.log('All done!');
 }).catch(function(err) {
   addContentToPage("Argh, broken: " + err.message);
 });
