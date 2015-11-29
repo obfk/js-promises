@@ -3,6 +3,7 @@ var urlsToCache = [
   '/'
 ];
 
+// cache things
 self.addEventListener('install', function(event) {
   // Perform install steps
   event.waitUntil(
@@ -14,13 +15,13 @@ self.addEventListener('install', function(event) {
   );
 });
 
+// serve things
 self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request)
       .then(function(response) {
         // Cache hit - return response
         if (response) {
-          console.log(response);
           return response;
         }
 
